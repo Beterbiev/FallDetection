@@ -8,9 +8,9 @@
 Adafruit_MPU6050 mpu;
 
 const char* ssid = "FallDetection";
-const char* password = "oscar123";
+//const char* password = "oscar123"; Ha5LUCFBy8Fjp7xL
 
-const char* SERVER_IP = "192.168.0.33";
+char SERVER_IP[20] = "0.0.0.0";
 const int SERVER_PORT = 5000;
 const char* SERVER_PATH = "/datos";
 
@@ -18,6 +18,7 @@ void setup() {
   Serial.begin(115200);
   esp_netif_init();
   initWiFi();
+  
   Wire.begin();
   mpu.begin();
 
@@ -91,7 +92,13 @@ void initWiFi() {
 
   WiFiManager wm;
 
-  bool res = wm.autoConnect(ssid, password);
+  wm.resetSettings();
+
+  WiFiManagerParameter serverIPParam("serverIP", "Server IP", SERVER_IP, 20);
+  wm.addParameter(&serverIPParam);
+
+  //bool res = wm.autoConnect(ssid, password); 
+  bool res = wm.autoConnect(ssid);
 
   if (!res) {
     Serial.println("Failed to connect");
@@ -105,4 +112,9 @@ void initWiFi() {
   }
   Serial.println("");
   Serial.println(WiFi.localIP());
+
+  const char* serverIPValue = serverIPParam.getValue();
+  if (serverIPValue != NULL) {
+    strcpy(SERVER_IP, serverIPValue);
+  }
 }
