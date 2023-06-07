@@ -67,7 +67,5 @@ function getData() {
   xhr.send();
 }
 
-
-
 // Actualizar los datos cada 500 milisegundos
 setInterval(getData, 500);
